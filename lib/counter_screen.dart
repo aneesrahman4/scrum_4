@@ -1,22 +1,14 @@
-// lib/screens/counter_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/counter_provider.dart';
 
-class CounterScreen extends StatefulWidget {
+class CounterScreen extends StatelessWidget {
   const CounterScreen({super.key});
 
   @override
-  State<CounterScreen> createState() => _CounterScreenState();
-}
-
-class _CounterScreenState extends State<CounterScreen> {
-  int _counter = 0;
-
-  void _decrement() => setState(() => _counter--);
-  void _increment() => setState(() => _counter++);
-  void _reset() => setState(() => _counter = 0);
-
-  @override
   Widget build(BuildContext context) {
+    final counterProvider = Provider.of<CounterProvider>(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Counter')),
       body: Center(
@@ -24,18 +16,18 @@ class _CounterScreenState extends State<CounterScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Counter Value: $_counter',
+              'Counter Value: ${counterProvider.counter}',
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildButton('➖ Decrease', _decrement),
+                _buildButton('➖ Decrease', counterProvider.decrement),
                 const SizedBox(width: 15),
-                _buildButton('➕ Increase', _increment),
+                _buildButton('➕ Increase', counterProvider.increment),
                 const SizedBox(width: 15),
-                _buildButton('🔄 Reset', _reset),
+                _buildButton('🔄 Reset', counterProvider.reset),
               ],
             ),
           ],

@@ -1,119 +1,83 @@
-// lib/screens/calculator_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/calculator_provider.dart';
 
-class CalculatorScreen extends StatefulWidget {
-  const CalculatorScreen({super.key});
+class CalculatorScreen extends StatelessWidget {
+  CalculatorScreen({super.key});
 
-  @override
-  State<CalculatorScreen> createState() => _CalculatorScreenState();
-}
-
-class _CalculatorScreenState extends State<CalculatorScreen> {
   final TextEditingController _num1Controller = TextEditingController();
   final TextEditingController _num2Controller = TextEditingController();
-  double? _result;
 
-  void _calculate(String operation) {
-    final num1 = double.tryParse(_num1Controller.text);
-    final num2 = double.tryParse(_num2Controller.text);
-
-    if (num1 == null || num2 == null) {
-      setState(() => _result = null);
-      return;
-    }
-
-    setState(() {
-      switch (operation) {
-        case '+':
-          _result = num1 + num2;
-          break;
-        case '-':
-          _result = num1 - num2;
-          break;
-        case '×':
-          _result = num1 * num2;
-          break;
-        case '÷':
-          _result = num2 != 0 ? num1 / num2 : double.infinity;
-          break;
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _num1Controller.dispose();
-    _num2Controller.dispose();
-    super.dispose();
+  void _calculate(BuildContext context, String operation) {
+    final calculatorProvider = Provider.of<CalculatorProvider>(
+      context,
+      listen: false,
+    );
+    calculatorProvider.calculate(
+      operation,
+      _num1Controller.text,
+      _num2Controller.text,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final result = context.watch<CalculatorProvider>().result;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Calculator')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      appBar: AppBar(title: const Text('🧮 Calculator')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _num1Controller,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Number 1',
-                border: OutlineInputBorder(),
+                labelText: 'Enter first number',
               ),
             ),
-            const SizedBox(height: 20),
             TextField(
               controller: _num2Controller,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Number 2',
-                border: OutlineInputBorder(),
+                labelText: 'Enter second number',
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Wrap(
               spacing: 10,
-              runSpacing: 10,
               children: [
-                _buildOperationButton('+', () => _calculate('+')),
-                _buildOperationButton('-', () => _calculate('-')),
-                _buildOperationButton('×', () => _calculate('×')),
-                _buildOperationButton('÷', () => _calculate('÷')),
+                ElevatedButton(
+                  onPressed: () => _calculate(context, '+'),
+                  child: const Text('+'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _calculate(context, '-'),
+                  child: const Text('-'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _calculate(context, '×'),
+                  child: const Text('×'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _calculate(context, '÷'),
+                  child: const Text('÷'),
+                ),
               ],
             ),
-            const SizedBox(height: 30),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                _result != null
-                    ? 'Result: ${_result!.toStringAsFixed(2)}'
-                    : 'Enter valid numbers',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            const SizedBox(height: 20),
+            Text(
+              result == null
+                  ? 'Enter valid numbers'
+                  : result == double.infinity
+                  ? 'Cannot divide by zero'
+                  : 'Result: $result',
+              style: const TextStyle(fontSize: 20),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildOperationButton(String text, VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(70, 60),
-        textStyle: const TextStyle(fontSize: 20),
-      ),
-      child: Text(text),
     );
   }
 }

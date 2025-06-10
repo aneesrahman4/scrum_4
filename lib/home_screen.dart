@@ -1,5 +1,5 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
+
 import 'counter_screen.dart';
 import 'color_screen.dart';
 import 'calculator_screen.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             _buildNavButton(context, '➕ Counter', const CounterScreen()),
             _buildNavButton(context, '🎨 Color', const ColorScreen()),
-            _buildNavButton(context, '🧮 Calculator', const CalculatorScreen()),
+            _buildNavButton(context, '🧮 Calculator', CalculatorScreen()),
           ],
         ),
       ),

@@ -1,57 +1,61 @@
-// lib/screens/color_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/color_provider.dart';
 
-class ColorScreen extends StatefulWidget {
+class ColorScreen extends StatelessWidget {
   const ColorScreen({super.key});
 
   @override
-  State<ColorScreen> createState() => _ColorScreenState();
-}
-
-class _ColorScreenState extends State<ColorScreen> {
-  Color _currentColor = Colors.grey;
-
-  void _setRed() => setState(() => _currentColor = Colors.red);
-  void _setGreen() => setState(() => _currentColor = Colors.green);
-  void _reset() => setState(() => _currentColor = Colors.grey);
-
-  @override
   Widget build(BuildContext context) {
+    final colorProvider = Provider.of<ColorProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Color')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                color: _currentColor,
-                borderRadius: BorderRadius.circular(10),
+      appBar: AppBar(
+        title: const Text('🎨 Color Changer'),
+        backgroundColor: colorProvider.color,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 150,
+            width: 150,
+            color: colorProvider.color,
+            child: const Center(
+              child: Text(
+                'Color Box',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildColorButton('🔴 Red', _setRed),
-                const SizedBox(width: 15),
-                _buildColorButton('🟢 Green', _setGreen),
-                const SizedBox(width: 15),
-                _buildColorButton('🔄 Refresh', _reset),
-              ],
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: colorProvider.setRed,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Red'),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: colorProvider.setGreen,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: const Text('Green'),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: colorProvider.reset,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text('Reset'),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildColorButton(String text, VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Padding(padding: const EdgeInsets.all(10), child: Text(text)),
     );
   }
 }
