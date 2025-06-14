@@ -9,11 +9,7 @@ class CalculatorScreen extends StatelessWidget {
   final TextEditingController _num2Controller = TextEditingController();
 
   void _calculate(BuildContext context, String operation) {
-    final calculatorProvider = Provider.of<CalculatorProvider>(
-      context,
-      listen: false,
-    );
-    calculatorProvider.calculate(
+    context.read<CalculatorProvider>().calculate(
       operation,
       _num1Controller.text,
       _num2Controller.text,
@@ -22,7 +18,9 @@ class CalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final result = context.watch<CalculatorProvider>().result;
+    final result = context.select<CalculatorProvider, double?>(
+      (provider) => provider.result,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('🧮 Calculator')),

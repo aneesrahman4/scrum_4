@@ -7,55 +7,70 @@ class ColorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorProvider = Provider.of<ColorProvider>(context);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('🎨 Color Changer'),
-        backgroundColor: colorProvider.color,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: Consumer<ColorProvider>(
+          builder:
+              (context, provider, _) => AppBar(
+                title: const Text('🎨 Color Changer'),
+                backgroundColor: provider.color,
+              ),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: 150,
-            width: 150,
-            color: colorProvider.color,
-            child: const Center(
-              child: Text(
-                'Color Box',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          Consumer<ColorProvider>(
+            builder:
+                (context, provider, _) => Container(
+                  height: 150,
+                  width: 150,
+                  color: provider.color,
+                  child: const Center(
+                    child: Text(
+                      'Color Box',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
           ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: colorProvider.setRed,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('Red'),
+              _buildButton(
+                'Red',
+                Colors.red,
+                context.read<ColorProvider>().setRed,
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: colorProvider.setGreen,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                child: const Text('Green'),
+              _buildButton(
+                'Green',
+                Colors.green,
+                context.read<ColorProvider>().setGreen,
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: colorProvider.reset,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                child: const Text('Reset'),
+              _buildButton(
+                'Reset',
+                Colors.grey,
+                context.read<ColorProvider>().reset,
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildButton(String label, Color color, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(backgroundColor: color),
+      child: Text(label),
     );
   }
 }

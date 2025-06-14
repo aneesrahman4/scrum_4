@@ -7,27 +7,35 @@ class CounterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final counterProvider = Provider.of<CounterProvider>(context);
-
     return Scaffold(
       appBar: AppBar(title: const Text('Counter')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Counter Value: ${counterProvider.counter}',
-              style: const TextStyle(fontSize: 24),
+            const Text('Counter Value:', style: TextStyle(fontSize: 24)),
+            Consumer<CounterProvider>(
+              builder:
+                  (context, provider, _) => Text(
+                    '${provider.counter}',
+                    style: const TextStyle(fontSize: 32),
+                  ),
             ),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildButton('➖ Decrease', counterProvider.decrement),
+                _buildButton(
+                  '➖ Decrease',
+                  context.read<CounterProvider>().decrement,
+                ),
                 const SizedBox(width: 15),
-                _buildButton('➕ Increase', counterProvider.increment),
+                _buildButton(
+                  '➕ Increase',
+                  context.read<CounterProvider>().increment,
+                ),
                 const SizedBox(width: 15),
-                _buildButton('🔄 Reset', counterProvider.reset),
+                _buildButton('🔄 Reset', context.read<CounterProvider>().reset),
               ],
             ),
           ],

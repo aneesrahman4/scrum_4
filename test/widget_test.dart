@@ -11,7 +11,6 @@ void main() {
   testWidgets('Home screen loads and navigates to counter', (
     WidgetTester tester,
   ) async {
-    // Build our app
     await tester.pumpWidget(const MiniApps());
 
     // Verify home screen shows all buttons
