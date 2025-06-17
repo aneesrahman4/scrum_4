@@ -30,10 +30,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final result = context.select<CalculatorProvider, double?>(
-      (provider) => provider.result,
-    );
-
     return Scaffold(
       appBar: AppBar(title: const Text('🧮 Calculator')),
       body: Padding(
@@ -66,13 +62,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   }).toList(),
             ),
             const SizedBox(height: 20),
-            Text(
-              result == null
-                  ? 'Enter valid numbers'
-                  : result == double.infinity
-                  ? 'Cannot divide by zero'
-                  : 'Result: $result',
-              style: const TextStyle(fontSize: 20),
+
+            Consumer<CalculatorProvider>(
+              builder: (context, provider, _) {
+                final result = provider.result;
+                return Text(
+                  result == null
+                      ? 'Enter valid numbers'
+                      : result == double.infinity
+                      ? 'Cannot divide by zero'
+                      : 'Result: $result',
+                  style: const TextStyle(fontSize: 20),
+                );
+              },
             ),
           ],
         ),
