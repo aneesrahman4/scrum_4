@@ -10,25 +10,32 @@ class CalculatorProvider with ChangeNotifier {
     final num2 = double.tryParse(input2);
 
     if (num1 == null || num2 == null) {
-      _result = null;
-      notifyListeners();
+      if (_result != null) {
+        _result = null;
+        notifyListeners();
+      }
       return;
     }
 
+    double? newResult;
     switch (operation) {
       case '+':
-        _result = num1 + num2;
+        newResult = num1 + num2;
         break;
       case '-':
-        _result = num1 - num2;
+        newResult = num1 - num2;
         break;
       case '×':
-        _result = num1 * num2;
+        newResult = num1 * num2;
         break;
       case '÷':
-        _result = num2 != 0 ? num1 / num2 : double.infinity;
+        newResult = num2 != 0 ? num1 / num2 : double.infinity;
         break;
     }
-    notifyListeners();
+
+    if (newResult != _result) {
+      _result = newResult;
+      notifyListeners();
+    }
   }
 }

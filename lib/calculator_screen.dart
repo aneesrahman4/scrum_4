@@ -2,18 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/calculator_provider.dart';
 
-class CalculatorScreen extends StatelessWidget {
-  CalculatorScreen({super.key});
+class CalculatorScreen extends StatefulWidget {
+  const CalculatorScreen({super.key});
 
+  @override
+  State<CalculatorScreen> createState() => _CalculatorScreenState();
+}
+
+class _CalculatorScreenState extends State<CalculatorScreen> {
   final TextEditingController _num1Controller = TextEditingController();
   final TextEditingController _num2Controller = TextEditingController();
 
-  void _calculate(BuildContext context, String operation) {
+  void _calculate(String operation) {
     context.read<CalculatorProvider>().calculate(
       operation,
       _num1Controller.text,
       _num2Controller.text,
     );
+  }
+
+  @override
+  void dispose() {
+    _num1Controller.dispose();
+    _num2Controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,24 +57,13 @@ class CalculatorScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Wrap(
               spacing: 10,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _calculate(context, '+'),
-                  child: const Text('+'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _calculate(context, '-'),
-                  child: const Text('-'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _calculate(context, '×'),
-                  child: const Text('×'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _calculate(context, '÷'),
-                  child: const Text('÷'),
-                ),
-              ],
+              children:
+                  ['+', '-', '×', '÷'].map((op) {
+                    return ElevatedButton(
+                      onPressed: () => _calculate(op),
+                      child: Text(op),
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 20),
             Text(
